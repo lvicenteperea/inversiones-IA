@@ -1,0 +1,23 @@
+services:
+  db:
+    image: mariadb:11.5
+    container_name: inversiones_ia_db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root_password
+      MARIADB_DATABASE: inversiones_ia
+      MARIADB_USER: inv_user
+      MARIADB_PASSWORD: inv_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - inversiones_ia_db_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  inversiones_ia_db_data:
